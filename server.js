@@ -4,10 +4,14 @@ var mongojs = require("mongojs");
 // Require request and cheerio. This makes the scraping possible
 var request = require("request");
 var cheerio = require("cheerio");
-
+const bodyParser = require("body-parser");
+var path = require("path");
 // Initialize Express
 var app = express();
 
+
+app.use("/static/", express.static(path.join(__dirname, "./public")));
+app.use(bodyParser.urlencoded({ extended: false }));
 // Database configuration
 var databaseUrl = "scraper";
 var collections = ["scrapedData"];
@@ -18,11 +22,22 @@ db.on("error", function(error) {
   console.log("Database Error:", error);
 });
 
+app.get("/index", function(req, res) {
+    res.sendFile(path.join(__dirname, "public/index.html"));
+  });
+
 // Main route (simple Hello World Message)
 app.get("/", function(req, res) {
   res.send("Hello world");
 });
 
+app.post("/:id", function(req, res) {
+    console.log(req.body)
+    // you have to store note
+    //  article => parent
+    //  parent has many notes 
+  });
+  
 // Retrieve data from the db
 app.get("/all", function(req, res) {
   // Find all results from the scrapedData collection in the db
